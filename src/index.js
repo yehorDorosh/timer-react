@@ -2,18 +2,19 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ms from 'pretty-ms';
 import UseDoubleClick from './doubleClick';
-import './index.css';
+import './index.scss';
 
 function DoubleClickBtn(props) {
   const [refCallback] = UseDoubleClick(props.clickHandler);
   return (
-    <button ref={refCallback}>
+    <button className={props.className} ref={refCallback}>
       {props.value}
+      <div className='subline'>double click</div>
     </button>
   );
 }
 
-class Timer extends React.Component {
+class Stopwatch extends React.Component {
   constructor(props){
     super(props)
     this.state = {
@@ -49,7 +50,7 @@ class Timer extends React.Component {
     clearInterval(this.timer);
   }
 
-  
+
   restartTimer() {
     this.resetTimer();
     setTimeout(() => this.startTimer(), 0);
@@ -58,26 +59,37 @@ class Timer extends React.Component {
 
 
   render() {
-    let start; 
+    let start;
+    const startBtnClasses = 'btn btn--green';
+
     if (this.state.time === 0) {
-      start = <button onClick={() => this.startTimer()}>Start/Stop</button>;
+      start = <button className={startBtnClasses} onClick={() => this.startTimer()}>Start</button>;
     } else if (this.state.time !== 0 && !this.state.isOn) {
-      start = <button onClick={() => this.startTimer()}>Start/Stop</button>;
+      start = <button className={startBtnClasses} onClick={() => this.startTimer()}>Start</button>;
     } else {
-      start = <button onClick={() => this.resetTimer()}>Start/Stop</button>;
+      start = <button className={startBtnClasses} onClick={() => this.resetTimer()}>Stop</button>;
     }
 
-    let wait = <DoubleClickBtn value='Wait' clickHandler={() => this.stopTimer()}/>
+    const wait = <DoubleClickBtn clickHandler={() => this.stopTimer()} className='btn btn--yellow' value='Wait' />
 
-    let reset = <button onClick={() => this.restartTimer()}>Reset</button>;
+    const reset = <button className='btn btn--white' onClick={() => this.restartTimer()}>Restart</button>;
 
 
     return(
-      <div>
-        <h3>timer: {ms(this.state.time)}</h3>
-        {start}
-        {wait}
-        {reset}
+      <div className='container'>
+        <div className='stopwatch'>
+          <h1 className='stopwatch__headline'>
+            Stopwatch
+          </h1>
+          <div className='stopwatch__time'>
+            {ms(this.state.time, {colonNotation: true})}
+          </div>
+          <div className='stopwatch__btns'>
+            {start}
+            {wait}
+            {reset}
+          </div>
+        </div>
       </div>
     )
   }
@@ -85,6 +97,6 @@ class Timer extends React.Component {
 
 
 ReactDOM.render(
-  <Timer />,
+  <Stopwatch />,
   document.getElementById('root')
 );
