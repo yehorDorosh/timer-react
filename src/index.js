@@ -14,6 +14,22 @@ function DoubleClickBtn(props) {
   );
 }
 
+function SwitchButton(props) {
+  if (props.stateDisabled) {
+    return <button className={props.classNameOn} onClick={props.switchOn}>{props.valueOn}</button>;
+  } else if (props.statePaused) {
+    return <button className={props.classNameOn} onClick={props.switchOn}>{props.valueOn}</button>;
+  } else {
+    return <button className={props.classNameOff} onClick={props.switchOff}>{props.valueOff}</button>;
+  }
+}
+
+function TouchButton(props) {
+  return (
+    <button className={props.className} onClick={props.onClick}>{props.value}</button>
+  );
+}
+
 class Stopwatch extends React.Component {
   constructor(props){
     super(props)
@@ -23,7 +39,6 @@ class Stopwatch extends React.Component {
       start: 0
     }
   }
-
 
   startTimer() {
     this.setState({
@@ -36,7 +51,6 @@ class Stopwatch extends React.Component {
     }), 1);
   }
 
-
   stopTimer() {
     if (this.state.isOn) {
       this.setState({isOn: false});
@@ -44,12 +58,10 @@ class Stopwatch extends React.Component {
     }
   }
 
-
   resetTimer() {
     this.setState({time: 0, isOn: false});
     clearInterval(this.timer);
   }
-
 
   restartTimer() {
     this.resetTimer();
@@ -57,24 +69,7 @@ class Stopwatch extends React.Component {
   }
 
 
-
   render() {
-    let start;
-    const startBtnClasses = 'btn btn--green';
-
-    if (this.state.time === 0) {
-      start = <button className={startBtnClasses} onClick={() => this.startTimer()}>Start</button>;
-    } else if (this.state.time !== 0 && !this.state.isOn) {
-      start = <button className={startBtnClasses} onClick={() => this.startTimer()}>Start</button>;
-    } else {
-      start = <button className={startBtnClasses} onClick={() => this.resetTimer()}>Stop</button>;
-    }
-
-    const wait = <DoubleClickBtn clickHandler={() => this.stopTimer()} className='btn btn--yellow' value='Wait' />
-
-    const reset = <button className='btn btn--white' onClick={() => this.restartTimer()}>Restart</button>;
-
-
     return(
       <div className='container'>
         <div className='stopwatch'>
@@ -85,9 +80,26 @@ class Stopwatch extends React.Component {
             {ms(this.state.time, {colonNotation: true})}
           </div>
           <div className='stopwatch__btns'>
-            {start}
-            {wait}
-            {reset}
+            <SwitchButton
+              stateDisabled = {this.state.time === 0}
+              statePaused = {this.state.time !== 0 && !this.state.isOn}
+              classNameOn = 'btn btn--green'
+              classNameOff = 'btn btn--red'
+              switchOn = {() => this.startTimer()}
+              switchOff = {() => this.resetTimer()}
+              valueOn = 'Start'
+              valueOff = 'Stop'
+            />
+             <DoubleClickBtn 
+              clickHandler={() => this.stopTimer()} 
+              className='btn btn--yellow' 
+              value='Wait'
+            />
+            <TouchButton
+              className='btn btn--white'
+              onClick={() => this.restartTimer()}
+              value='Restart'
+            />
           </div>
         </div>
       </div>
