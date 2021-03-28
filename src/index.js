@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ms from 'pretty-ms';
 import UseDoubleClick from './doubleClick';
+import ms from './msToHMS';
 import './index.scss';
 
 function DoubleClickBtn(props) {
